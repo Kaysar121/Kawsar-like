@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kawsar Like - Visit API</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#0a0a12; --bg-2:#12121f;
+    --gold:#ffc542; --gold-2:#ff9d00;
+    --red:#ff2d55; --cyan:#00e5ff; --green:#00ff9d;
+    --text:#eaf2ff; --muted:#8b93b0; --purple:#a855f7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Rajdhani',sans-serif;
+    background:radial-gradient(circle at 20% 10%,#1a1030 0%,var(--bg-1) 45%,#05050a 100%);
+    color:var(--text);min-height:100vh;overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(255,197,66,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,197,66,0.04) 1px,transparent 1px);
+    background-size:40px 40px;pointer-events:none;z-index:0;
+  }
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:30px 18px 60px;}
+
+  header{text-align:center;margin-bottom:28px;}
+  .logo{
+    font-family:'Orbitron',sans-serif;font-weight:900;
+    font-size:clamp(26px,6vw,48px);letter-spacing:2px;
+    background:linear-gradient(90deg,var(--gold),#fff5c2,var(--gold-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 40px rgba(255,197,66,0.35);
+    animation:glow 3s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{filter:drop-shadow(0 0 8px rgba(255,197,66,0.5));}
+    50%{filter:drop-shadow(0 0 22px rgba(255,157,0,0.9));}
+  }
+  .subtitle{margin-top:6px;color:var(--muted);font-size:15px;letter-spacing:4px;text-transform:uppercase;}
+  .badge-vip{
+    display:inline-block;margin-top:12px;padding:6px 18px;
+    border:1px solid var(--gold);border-radius:30px;color:var(--gold);
+    font-size:12px;letter-spacing:2px;font-weight:700;
+    background:rgba(255,197,66,0.06);
+    box-shadow:0 0 22px rgba(255,197,66,0.2);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 22px rgba(255,197,66,0.2);}
+    50%{box-shadow:0 0 34px rgba(255,157,0,0.45);}
+  }
+
+  .card{
+    background:linear-gradient(160deg,rgba(20,20,35,0.95),rgba(10,10,20,0.95));
+    border:1px solid rgba(255,197,66,0.18);border-radius:18px;
+    padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 0 40px rgba(255,197,66,0.03);
+    backdrop-filter:blur(8px);
+  }
+  .card + .card{margin-top:22px;}
+
+  label{display:block;font-weight:700;font-size:13px;letter-spacing:2px;
+        text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  input,select{
+    width:100%;padding:13px 15px;background:rgba(0,0,0,0.45);
+    border:1px solid rgba(255,197,66,0.25);border-radius:10px;
+    color:var(--text);font-size:16px;font-family:'Rajdhani',sans-serif;font-weight:600;
+    outline:none;transition:.2s;
+  }
+  input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,197,66,0.15);}
+
+  .field + .field{margin-top:16px;}
+
+  .regions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .chip{
+    flex:1 1 auto;min-width:70px;text-align:center;padding:10px 8px;
+    border-radius:10px;border:1px solid rgba(255,197,66,0.25);
+    background:rgba(0,0,0,0.4);color:var(--muted);font-weight:700;
+    letter-spacing:2px;cursor:pointer;transition:.2s;user-select:none;font-size:14px;
+  }
+  .chip:hover{color:var(--gold);border-color:var(--gold);}
+  .chip.active{
+    color:#000;background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    border-color:var(--gold);box-shadow:0 0 20px rgba(255,197,66,0.4);
+  }
+
+
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+  .mode{padding:12px;border:1px solid rgba(255,197,66,.25);border-radius:10px;background:rgba(0,0,0,.4);color:var(--muted);font-family:'Orbitron',sans-serif;font-weight:800;cursor:pointer;}
+  .mode.active{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1a0f00;border-color:var(--gold);}
+  .visit-options{display:none;margin-top:14px;}
+
+  .btn{
+    width:100%;margin-top:22px;padding:16px;border:none;border-radius:12px;
+    font-family:'Orbitron',sans-serif;font-weight:900;font-size:17px;letter-spacing:3px;
+    color:#1a0f00;background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    cursor:pointer;transition:.25s;box-shadow:0 10px 30px rgba(255,157,0,0.35);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,157,0,0.55);}
+  .btn:active{transform:translateY(0);}
+  .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
+  .btn .spinner{
+    display:inline-block;width:16px;height:16px;
+    border:2px solid rgba(0,0,0,0.3);border-top-color:#000;border-radius:50%;
+    animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .result{display:none;}
+  .result.show{display:block;animation:fadeUp .4s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  .player-header{text-align:center;padding-bottom:18px;
+    border-bottom:1px dashed rgba(255,197,66,0.25);margin-bottom:18px;}
+  .player-avatar{
+    width:70px;height:70px;border-radius:50%;margin:0 auto 10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    box-shadow:0 0 30px rgba(255,197,66,0.5);
+  }
+  .player-name{
+    font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;
+    color:var(--gold);text-shadow:0 0 20px rgba(255,197,66,0.5);word-break:break-word;
+  }
+  .player-uid{color:var(--muted);font-size:14px;letter-spacing:1.5px;margin-top:6px;}
+
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  @media (max-width:480px){.stats{grid-template-columns:1fr;}}
+
+  .stat{padding:16px;border-radius:12px;background:rgba(0,0,0,0.35);
+        border:1px solid rgba(255,197,66,0.15);}
+  .stat .k{font-size:12px;letter-spacing:2px;color:var(--muted);
+           text-transform:uppercase;font-weight:700;}
+  .stat .v{margin-top:6px;font-family:'Orbitron',sans-serif;font-size:22px;
+           font-weight:900;color:var(--text);}
+  .stat.before .v{color:#ff6b6b;}
+  .stat.after  .v{color:var(--cyan);}
+  .stat.given  .v{color:var(--green);}
+  .stat.gift   .v{color:var(--gold);}
+  .stat.live   .v{color:var(--purple);}
+
+  .status-pill{display:inline-block;margin-top:14px;padding:6px 18px;border-radius:30px;
+    font-weight:700;letter-spacing:2px;font-size:13px;text-transform:uppercase;}
+  .status-ok{background:rgba(0,255,157,0.12);color:var(--green);border:1px solid var(--green);}
+  .status-fail{background:rgba(255,45,85,0.12);color:var(--red);border:1px solid var(--red);}
+
+  .error-box{padding:14px 16px;border-radius:10px;background:rgba(255,45,85,0.1);
+    border:1px solid rgba(255,45,85,0.4);color:#ffb3c1;font-weight:600;}
+
+  .meta-row{display:flex;justify-content:space-between;margin-top:14px;
+    font-size:13px;color:var(--muted);letter-spacing:1.5px;flex-wrap:wrap;gap:8px;}
+
+  footer{text-align:center;margin-top:34px;color:var(--muted);
+         font-size:13px;letter-spacing:2px;}
+  footer a{color:var(--gold);text-decoration:none;}
+  footer a:hover{text-shadow:0 0 12px var(--gold);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">Kawsar Like - Visit API</div>
+    <div class="subtitle">VIP Free Fire LIKE + VISIT API</div>
+    <div class="badge-vip">FAST • LIVE • API</div>
+  </header>
+
+  <div class="card">
+    <div class="field">
+      <label>Player UID</label>
+      <input id="uid" type="text" inputmode="numeric" placeholder="Enter target player UID" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label>Select Region</label>
+      <div class="regions" id="regions">
+        <div class="chip active" data-region="BD">🇧🇩 BD</div>
+        <div class="chip" data-region="IND">🇮🇳 IND</div>
+        <div class="chip" data-region="BR">🇧🇷 BR</div>
+        <div class="chip" data-region="US">🇺🇸 US</div>
+        <div class="chip" data-region="SAC">🌎 SAC</div>
+        <div class="chip" data-region="NA">🌐 NA</div>
+      </div>
+    </div>
+
+    <div class="modes">
+      <button type="button" class="mode active" id="likeMode">👍 LIKE</button>
+      <button type="button" class="mode" id="visitMode">👁 VISIT</button>
+    </div>
+
+    <div class="visit-options" id="visitOptions">
+      <label style="margin-top:10px">Custom Visits</label>
+      <input id="visitTarget" type="number" min="1" max="50000" value="15000" placeholder="15000" />
+    </div>
+
+    <button class="btn" id="submitBtn">🚀 SEND LIKES</button>
+  </div>
+
+  <div class="card result" id="resultCard">
+    <div id="resultBody"></div>
+  </div>
+
+  <footer>
+<div>Developed by <b style="color:var(--gold)">Kawsar</b> • <a href="https://t.me/Kawsar9340" target="_blank">@Kawsar9340</a></div>
+    <div style="margin-top:6px;opacity:.7;">Kawsar Like - Visit API</div>
+  </footer>
+
+</div>
+
+<script>
+const API_BASE = "";
+let selectedRegion = "BD";
+let mode = "like";
+const chips = document.querySelectorAll(".chip");
+chips.forEach(c => c.addEventListener("click", () => {
+  chips.forEach(x => x.classList.remove("active"));
+  c.classList.add("active");
+  selectedRegion = c.dataset.region;
+}));
+const likeMode = document.getElementById("likeMode");
+const visitMode = document.getElementById("visitMode");
+const visitOptions = document.getElementById("visitOptions");
+const visitTarget = document.getElementById("visitTarget");
+const btn = document.getElementById("submitBtn");
+const resultCard = document.getElementById("resultCard");
+const resultBody = document.getElementById("resultBody");
+function setMode(next) {
+  mode = next;
+  likeMode.classList.toggle("active", mode === "like");
+  visitMode.classList.toggle("active", mode === "visit");
+  visitOptions.style.display = mode === "visit" ? "block" : "none";
+  btn.innerHTML = mode === "visit" ? "👁 SEND VISITS" : "🚀 SEND LIKES";
+}
+likeMode.addEventListener("click", () => setMode("like"));
+visitMode.addEventListener("click", () => setMode("visit"));
+btn.addEventListener("click", async () => {
+  const uid = document.getElementById("uid").value.trim();
+  if (!uid || !/^\d+$/.test(uid)) return showLocalError("Please enter a valid numeric Player UID");
+  let url;
+  if (mode === "visit") {
+    const target = Number.parseInt(visitTarget.value || "15000", 10);
+    if (!Number.isFinite(target) || target < 1 || target > 50000) return showLocalError("Custom visits must be between 1 and 50000");
+    url = `${API_BASE}/visit/${encodeURIComponent(selectedRegion)}/${encodeURIComponent(uid)}/${target}`;
+  } else {
+    url = `${API_BASE}/like/${encodeURIComponent(selectedRegion)}/${encodeURIComponent(uid)}`;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> PROCESSING...';
+  resultCard.classList.remove("show");
+  try {
+    const resp = await fetch(url, {method:"GET", headers:{"Accept":"application/json"}});
+    const raw = await resp.text();
+    let data;
+    try { data = JSON.parse(raw); } catch { data = {response: raw || "Empty response"}; }
+    if (mode === "visit") showVisitResult(data, resp.status, resp.ok);
+    else showLikeResult(data, resp.status, resp.ok);
+  } catch (e) {
+    showLocalError("Network error: " + (e && e.message ? e.message : String(e)));
+  } finally {
+    btn.disabled = false;
+    setMode(mode);
+  }
+});
+function statusBlock(code, ok) {
+  return `<div class="meta-row"><span>HTTP Status: <b style="color:${ok ? 'var(--green)' : 'var(--red)'}">${escapeHtml(String(code))} ${ok ? 'OK' : 'ERROR'}</b></span><span>Endpoint: <b style="color:var(--gold)">${mode === 'visit' ? '/visit/' : '/like/'}${escapeHtml(selectedRegion)}/…</b></span></div>`;
+}
+function rawResponse(data) {
+  return `<details style="margin-top:18px"><summary style="cursor:pointer;color:var(--gold);font-weight:700;letter-spacing:1px">VIEW EXACT API RESPONSE (JSON)</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:10px;padding:14px;background:#05050a;border:1px solid rgba(255,197,66,.2);border-radius:10px;color:#d8e5ff;font:13px/1.5 monospace">${escapeHtml(JSON.stringify(data, null, 2))}</pre></details>`;
+}
+function showVisitResult(d, httpStatus, httpOk) {
+  if (d && d.error) {
+    resultBody.innerHTML = `<div class="error-box">⚠️ ${escapeHtml(d.error)}</div>${statusBlock(httpStatus, httpOk)}${rawResponse(d)}`;
+  } else {
+    const ok = !!d.success;
+    resultBody.innerHTML = `<div class="player-header"><div class="player-avatar">👁</div><div class="player-name">${escapeHtml(d.nickname || "Visit result")}</div><div class="player-uid">UID: ${escapeHtml(String(d.uid || document.getElementById("uid").value.trim()))}</div><div class="status-pill ${ok ? 'status-ok' : 'status-fail'}">${ok ? '✔ SUCCESS' : '✖ RESPONSE RECEIVED'}</div></div><div class="stats"><div class="stat before"><div class="k">Visits Success</div><div class="v">${d.visits_success ?? 0}</div></div><div class="stat after"><div class="k">Visits Failed</div><div class="v">${d.visits_failed ?? 0}</div></div><div class="stat given"><div class="k">Total Sent</div><div class="v">${d.visits_total ?? 0}</div></div><div class="stat gift"><div class="k">Target</div><div class="v">${d.target_set ?? 0}</div></div><div class="stat live"><div class="k">Level</div><div class="v">${d.level ?? 0}</div></div><div class="stat live"><div class="k">Efficiency</div><div class="v">${escapeHtml(String(d.efficiency ?? '0%'))}</div></div></div><div class="meta-row"><span>Region: <b style="color:var(--gold)">${escapeHtml(selectedRegion)}</b></span><span>Time: <b style="color:var(--gold)">${escapeHtml(String(d.time_taken ?? ''))}</b></span></div>${statusBlock(httpStatus, httpOk)}${rawResponse(d)}`;
+  }
+  resultCard.classList.add("show"); resultCard.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function showLikeResult(d, httpStatus, httpOk) {
+  if (d && d.error) {
+    resultBody.innerHTML = `<div class="error-box">⚠️ ${escapeHtml(d.error)}</div>${statusBlock(httpStatus, httpOk)}${rawResponse(d)}`;
+  } else {
+    const ok = d.status === 1 || d.success === true;
+    resultBody.innerHTML = `<div class="player-header"><div class="player-avatar">🎮</div><div class="player-name">${escapeHtml(d.PlayerNickname || d.nickname || "Unknown")}</div><div class="player-uid">UID: ${escapeHtml(String(d.UID || d.uid || document.getElementById("uid").value.trim()))}</div><div class="status-pill ${ok ? 'status-ok' : 'status-fail'}">${ok ? '✔ SUCCESS' : '✖ NO LIKES GIVEN'}</div></div><div class="stats"><div class="stat before"><div class="k">Likes Before</div><div class="v">${d.LikesbeforeCommand ?? 0}</div></div><div class="stat after"><div class="k">Likes After</div><div class="v">${d.LikesafterCommand ?? 0}</div></div><div class="stat given"><div class="k">Likes Given</div><div class="v">+${d.LikesGivenByAPI ?? 0}</div></div><div class="stat gift"><div class="k">Requests Success</div><div class="v">${d.requests_success ?? 0}</div></div><div class="stat live"><div class="k">Tokens Used</div><div class="v">${d.tokens_used ?? 0}</div></div><div class="stat live"><div class="k">Requests Total</div><div class="v">${d.requests_total ?? 0}</div></div></div><div class="meta-row"><span>Region: <b style="color:var(--gold)">${escapeHtml(d.server_name || selectedRegion)}</b></span><span>HTTP: <b style="color:${httpOk ? 'var(--green)' : 'var(--red)'}">${httpStatus}</b></span></div>${statusBlock(httpStatus, httpOk)}${rawResponse(d)}`;
+  }
+  resultCard.classList.add("show"); resultCard.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function showLocalError(msg) {
+  resultBody.innerHTML = `<div class="error-box">⚠️ ${escapeHtml(msg)}</div>`;
+  resultCard.classList.add("show");
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
+</script>
+</body>
+</html>

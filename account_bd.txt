@@ -1,0 +1,1 @@
+# Add authorized UID:PASSWORD entries here; keep this file private.
